@@ -1,0 +1,55 @@
+{
+  "name": "@exactly/exa-embed-example",
+  "version": "0.0.1",
+  "license": "MIT",
+  "repository": "github:exactly/exa-embed-example",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite"
+  },
+  "dependencies": {
+    "@farcaster/miniapp-host": "^0.2.13",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@eslint-react/eslint-plugin": "^2.2.1",
+    "@eslint/js": "^9.37.0",
+    "@types/express": "^5.0.3",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.0.4",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-unicorn": "^61.0.2",
+    "express": "^5.1.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.1",
+    "viem": "^2.38.1",
+    "vite": "^7.1.9",
+    "vite-plugin-mix": "^0.4.0"
+  },
+  "type": "module",
+  "packageManager": "pnpm@10.18.2",
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "vite": "7"
+      }
+    },
+    "onlyBuiltDependencies": [
+      "bufferutil",
+      "esbuild",
+      "utf-8-validate"
+    ]
+  },
+  "prettier": {
+    "printWidth": 120
+  }
+}
