@@ -1,5 +1,6 @@
 import { exposeToIframe, type MiniAppHost } from "@farcaster/miniapp-host";
 
+/** Exposes host integration to the Exa App in an iframe: client context and host‑provided capabilities. */
 export default function hostExaApp({
   iframe,
   clientFid,
@@ -11,12 +12,19 @@ export default function hostExaApp({
   },
   ready = () => {}, // hide splash handled by embedding app
 }: {
+  /** Element that loads the app. Its src should be the Exa App url (e.g. https://web.exactly.app). */
   iframe: HTMLIFrameElement;
+  /** Unique id for the embedding client (per integrator). */
   clientFid: number;
+  /** Identifies the host environment (`web` or `mobile`); enables platform‑specific behavior. */
   platformType: "web" | "mobile";
+  /** Wallet requests: implement `eth_accounts` and `personal_sign`. To support bridging, also implement `eth_signTransaction`. */
   request: (method: string, params?: unknown) => Promise<unknown>;
+  /** Optional. EIP-155 chain ID; defaults to Optimism for production hostname, fallback to OP-Sepolia. */
   chainId?: number;
+  /** Optional. Should open external URLs; defaults to safe window.open. */
   openUrl?: (url: string) => void;
+  /** Optional. Called when Exa signals readiness (hide splash, etc.). */
   ready?: () => void;
 }) {
   return exposeToIframe({
