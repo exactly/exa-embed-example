@@ -23,6 +23,7 @@ via `hostExaApp`.
 ```js
 const host = hostExaApp({
   iframe,                            // the iframe element
+  appUrl: "https://localhost:5173/", // deep link to exa app
   clientFid: 69,                     // unique id for the integration
   platformType: "web",               // "web" or "mobile"
   request: (method, params) => {

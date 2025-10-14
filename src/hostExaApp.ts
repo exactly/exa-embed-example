@@ -3,6 +3,7 @@ import { exposeToIframe, type MiniAppHost } from "@farcaster/miniapp-host";
 /** Exposes host integration to the Exa App in an iframe: client context and host‑provided capabilities. */
 export default function hostExaApp({
   iframe,
+  appUrl,
   clientFid,
   platformType,
   request,
@@ -14,6 +15,8 @@ export default function hostExaApp({
 }: {
   /** Element that loads the app. Its src should be the Exa App url (e.g. https://web.exactly.app). */
   iframe: HTMLIFrameElement;
+  /** Deep link to Exa App inside the embedding client. For redirecting users (e.g. after KYC). */
+  appUrl: string;
   /** Unique id for the embedding client (per integrator). */
   clientFid: number;
   /** Identifies the host environment (`web` or `mobile`); enables platform‑specific behavior. */
@@ -31,7 +34,7 @@ export default function hostExaApp({
     iframe,
     miniAppOrigin: new URL(iframe.src).origin,
     sdk: {
-      context: { client: { clientFid, platformType, added: false }, user: { fid: 0 } },
+      context: { client: { clientFid, platformType, appUrl, added: false }, user: { fid: 0 } },
       getChains: async () => [`eip155:${chainId}`],
       getCapabilities: async () => ["actions.openUrl", "actions.ready"],
       ethProviderRequestV2: async ({ id, method, params }) => {

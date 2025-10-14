@@ -12,6 +12,7 @@ export function App() {
     // initialize miniapp host integration
     const host = hostExaApp({
       iframe, // exa app iframe element
+      appUrl: "https://localhost:5173/", // deep link to exa app inside the embedding client
       clientFid: 69, // integrator client id; replace with a unique value
       platformType: "web", // integrator platform type
       request: (method, params) =>
