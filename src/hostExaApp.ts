@@ -37,14 +37,11 @@ export default function hostExaApp({
       context: { client: { clientFid, platformType, appUrl, added: false }, user: { fid: 0 } },
       getChains: async () => [`eip155:${chainId}`],
       getCapabilities: async () => ["actions.openUrl", "actions.ready"],
-      ethProviderRequestV2: async ({ id, method, params }) => {
-        switch (method) {
-          case "eth_chainId":
-            return { jsonrpc: "2.0", id, result: `0x${chainId.toString(16)}` };
-          default:
-            return { jsonrpc: "2.0", id, result: await request(method, params) };
-        }
-      },
+      ethProviderRequestV2: async ({ id, method, params }) => ({
+        jsonrpc: "2.0",
+        id,
+        result: await request(method, params),
+      }),
       openUrl,
       ready,
 
