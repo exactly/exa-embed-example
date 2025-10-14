@@ -1,6 +1,6 @@
 # Exa App embed example
 
-## Getting started
+## Host integration
 
 Essential steps to load the Exa App in an iframe and expose the host integration
 via `hostExaApp`.
@@ -35,6 +35,21 @@ const host = hostExaApp({
 
 // later: host.cleanup()
 ```
+
+- The `hostExaApp` helper is small and self‑contained. Drop it into the host and
+  invoke it. Link opening works by default (via `window.open`). Pass a custom
+  `openUrl` only if a different behavior is needed. Optional hooks like `ready`
+  are also configured through parameters, so editing the helper isn’t necessary.
+- The `request` handler is required. It must handle wallet calls:
+  `eth_accounts` and `personal_sign` (add `eth_signTransaction` for
+  bridging). Typically forward these to an authenticated backend; for
+  self‑custodial setups, call a wallet provider to sign locally.
+
+### Dependency
+
+The integration depends on [`@farcaster/miniapp-host`](https://www.npmjs.com/package/@farcaster/miniapp-host).
+It provides the host-side interface and message wiring needed for the Exa App
+to access capabilities (wallet requests, opening URLs).
 
 ## Example app
 
