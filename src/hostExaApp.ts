@@ -21,7 +21,7 @@ export default function hostExaApp({
   clientFid: number;
   /** Identifies the host environment (`web` or `mobile`); enables platform‑specific behavior. */
   platformType: "web" | "mobile";
-  /** Wallet requests: implement `eth_accounts` and `personal_sign`. To support bridging, also implement `eth_signTransaction`. */
+  /** Wallet requests: implement `eth_chainId`, `eth_accounts`, `eth_requestAccounts`, and `personal_sign`. For bridging, add `wallet_switchEthereumChain` and `wallet_sendCalls`. */
   request: (method: string, params?: unknown) => Promise<unknown>;
   /** Optional. EIP-155 chain ID; defaults to Optimism for production hostname, fallback to OP-Sepolia. */
   chainId?: number;

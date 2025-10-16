@@ -27,8 +27,9 @@ const host = hostExaApp({
   clientFid: 69,                     // unique id for the integration
   platformType: "web",               // "web" or "mobile"
   request: (method, params) => {
-    // wallet requests. required: `eth_accounts` and `personal_sign`.
-    // for bridging (recommended): `eth_signTransaction`.
+    // wallet requests. required: `eth_chainId`, `eth_accounts`,
+    // `eth_requestAccounts`, and `personal_sign`.
+    // for bridging: `wallet_switchEthereumChain`, `wallet_sendCalls`.
     // forward to an authenticated backend or a wallet provider
   },
 });
@@ -41,8 +42,9 @@ const host = hostExaApp({
   `openUrl` only if a different behavior is needed. Optional hooks like `ready`
   are also configured through parameters, so editing the helper isn’t necessary.
 - The `request` handler is required. It must handle wallet calls:
-  `eth_accounts` and `personal_sign` (add `eth_signTransaction` for
-  bridging). Typically forward these to an authenticated backend; for
+  `eth_chainId`, `eth_accounts`, `eth_requestAccounts`, and `personal_sign`.
+  For bridging, also implement `wallet_switchEthereumChain` and
+  `wallet_sendCalls`. Typically forward these to an authenticated backend; for
   self‑custodial setups, call a wallet provider to sign locally.
 
 ### Dependency
