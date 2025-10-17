@@ -1,5 +1,12 @@
 {
-  "compilerOptions": { "jsx": "react-jsx", "strict": true, "noUncheckedIndexedAccess": true },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noUncheckedIndexedAccess": true,
+    "target": "esnext",
+    "strict": true
+  },
   "include": ["src"],
   "exclude": ["dist", "build", "node_modules"]
 }
