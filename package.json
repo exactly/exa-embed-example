@@ -35,17 +35,25 @@
     "vite": "^7.1.10",
     "vite-plugin-mix": "^0.4.0"
   },
+  "optionalDependencies": {
+    "@0xsequence/connect": "^5.3.23"
+  },
   "type": "module",
   "packageManager": "pnpm@10.18.3",
   "pnpm": {
     "peerDependencyRules": {
       "allowedVersions": {
-        "vite": "7"
+        "react": "19",
+        "vite": "7",
+        "zod": "4"
       }
     },
     "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@tailwindcss/oxide",
       "bufferutil",
       "esbuild",
+      "keccak",
       "utf-8-validate"
     ]
   },
