@@ -9,43 +9,47 @@
     "dev": "vite"
   },
   "dependencies": {
-    "@farcaster/miniapp-host": "^0.2.14",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "@farcaster/miniapp-host": "^0.2.14"
   },
   "devDependencies": {
-    "@eslint-react/eslint-plugin": "^2.2.2",
-    "@eslint/js": "^9.37.0",
-    "@types/express": "^5.0.3",
+    "@eslint-react/eslint-plugin": "^2.3.1",
+    "@eslint/js": "^9.39.1",
+    "@types/express": "^5.0.5",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
-    "@vitejs/plugin-react": "^5.0.4",
-    "eslint": "^9.37.0",
+    "@vitejs/plugin-react": "^5.1.0",
+    "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.4",
-    "eslint-plugin-react-hooks": "^7.0.0",
-    "eslint-plugin-unicorn": "^61.0.2",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-unicorn": "^62.0.0",
     "express": "^5.1.0",
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.1",
-    "viem": "^2.38.3",
-    "vite": "^7.1.10",
+    "typescript-eslint": "^8.46.3",
+    "viem": "^2.38.6",
+    "vite": "^7.2.1",
     "vite-plugin-mix": "^0.4.0"
   },
   "optionalDependencies": {
-    "@0xsequence/connect": "^5.3.23"
+    "@0xsequence/connect": "^5.3.29",
+    "@0xsequence/indexer": "^2.3.33",
+    "@0xsequence/network": "^2.3.33",
+    "@wagmi/core": "^2.22.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "type": "module",
-  "packageManager": "pnpm@10.18.3",
+  "packageManager": "pnpm@10.20.0",
   "pnpm": {
     "peerDependencyRules": {
       "allowedVersions": {
         "react": "19",
         "vite": "7",
-        "zod": "4"
+        "zod": "4",
+        "ws": "7"
       }
     },
     "onlyBuiltDependencies": [

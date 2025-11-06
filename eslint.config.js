@@ -15,7 +15,6 @@ export default defineConfig({
       tsconfigRootDir: import.meta.dirname,
     },
   },
-  plugins: { "react-hooks": reactHooks },
   extends: [
     js.configs.recommended,
     ...tseslint.configs.recommended,
