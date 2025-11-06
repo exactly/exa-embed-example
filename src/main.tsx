@@ -4,7 +4,8 @@ const example = new URLSearchParams(window.location.search).get("example") ?? "f
 
 const { default: Root } = await (
   {
-    fetch: () => import("./App"),
-  }[example] ?? (() => import("./App"))
+    fetch: () => import("./examples/Fetch"),
+    sequence: () => import("./examples/Sequence"),
+  }[example] ?? (() => import("./examples/Sequence"))
 )();
 createRoot(document.querySelector("#root")!).render(<Root />);

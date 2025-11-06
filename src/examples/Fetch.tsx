@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from "react";
 
-import hostExaApp from "./hostExaApp"; // host SDK: expose APIs to the iframe
+import hostExaApp from "../hostExaApp"; // host SDK: expose APIs to the iframe
 
 export default function App() {
   const exaApp = useRef<HTMLIFrameElement>(null); // hold iframe element reference
