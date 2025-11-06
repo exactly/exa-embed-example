@@ -2,9 +2,9 @@ import react from "@eslint-react/eslint-plugin";
 import js from "@eslint/js";
 import prettier from "eslint-plugin-prettier/recommended";
 import reactHooks from "eslint-plugin-react-hooks";
+import unicorn from "eslint-plugin-unicorn";
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
-import unicorn from "eslint-plugin-unicorn";
 
 export default defineConfig({
   files: ["**/*.{ts,tsx,js}"],
