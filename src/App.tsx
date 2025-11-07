@@ -3,7 +3,7 @@ import { allNetworks, ChainId } from "@0xsequence/network";
 import { getAccount, getChainId, signMessage, switchChain } from "@wagmi/core";
 import { useLayoutEffect, useRef } from "react";
 
-import hostExaApp from "../hostExaApp"; // host SDK: expose APIs to the iframe
+import hostExaApp from "./hostExaApp"; // host SDK: expose APIs to the iframe
 
 const { connectConfig, wagmiConfig } = createConfig("waas", {
   appName: "Exa App Embed Example",
