@@ -44,11 +44,42 @@
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); /* elevate above page */
         outline: 1px solid rgba(0, 0, 0, 0.08); /* subtle border in light mode */
         z-index: 1000; /* ensure it stays on top */
+        transform: translateY(0);
+        visibility: visible;
+        pointer-events: auto;
+        transition:
+          transform 300ms ease,
+          visibility 0s;
+      }
+      iframe.closed {
+        transform: translateY(calc(100% + 16px));
+        visibility: hidden;
+        pointer-events: none;
+        transition:
+          transform 300ms ease,
+          visibility 0s linear 300ms;
+      }
+      button {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        background: #ffffffcc;
+        color: #111;
+        cursor: pointer;
       }
       @media (prefers-color-scheme: dark) {
         iframe {
           outline-color: rgba(255, 255, 255, 0.08); /* subtle border in dark mode */
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        button {
+          border-color: rgba(255, 255, 255, 0.12);
+          background: #111111cc;
+          color: #fff;
         }
       }
       /* #endregion */

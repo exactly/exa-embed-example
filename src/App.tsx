@@ -1,12 +1,15 @@
 import { SequenceConnect, useOpenConnectModal } from "@0xsequence/connect";
 import { getAccount, getChainId, signMessage, switchChain } from "@wagmi/core";
 import { useLayoutEffect, useRef } from "react";
+import { useAccount, useDisconnect } from "wagmi";
 
 import hostExaApp from "./hostExaApp"; // host SDK: expose APIs to the iframe
 import { connectConfig, wagmiConfig } from "./sequence";
 
 function App() {
+  const { disconnect } = useDisconnect();
   const { setOpenConnectModal } = useOpenConnectModal();
+  const { isConnected, isConnecting } = useAccount();
   const exaApp = useRef<HTMLIFrameElement>(null); // hold iframe element reference
 
   useLayoutEffect(() => {
@@ -39,22 +42,29 @@ function App() {
             throw new Error(`${method} not supported`);
         }
       },
-      ready: () => {
-        if (wagmiConfig.state.status !== "connected") setOpenConnectModal(true);
-      },
     });
 
     return () => host.cleanup(); // teardown host SDK on unmount
   }, [setOpenConnectModal]); // run once on mount
 
   return (
-    <iframe
-      ref={exaApp}
-      title="Exa App"
-      src="https://sandbox.exactly.app" // sandbox origin; replace with https://web.exactly.app in production
-      allow="clipboard-read; clipboard-write; camera" // address UX: copy/paste addresses; scan address QR codes
-      loading="eager" // load immediately; primary content
-    />
+    <>
+      <iframe
+        ref={exaApp}
+        title="Exa App"
+        src="https://sandbox.exactly.app" // sandbox origin; replace with https://web.exactly.app in production
+        allow="clipboard-read; clipboard-write; camera" // address UX: copy/paste addresses; scan address QR codes
+        loading="eager" // load immediately; primary content
+        className={isConnected ? undefined : "closed"}
+      />
+      <button
+        type="button"
+        disabled={isConnecting}
+        onClick={() => (isConnected ? disconnect() : setOpenConnectModal(true))}
+      >
+        {isConnected ? "Sign Out" : "Sign In"}
+      </button>
+    </>
   );
 }
 
