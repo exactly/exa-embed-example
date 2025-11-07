@@ -32,5 +32,5 @@ export default defineConfig({
     "unicorn/prevent-abbreviations": ["error", { allowList: { params: true } }],
     "unicorn/switch-case-braces": ["error", "avoid"],
   },
-  ignores: ["dist/**", "build/**"],
+  ignores: ["dist/**"],
 });
