@@ -16,33 +16,40 @@
       /* #endregion */
 
       /* #region exa app style (match exa app theme) */
-      html,
-      body,
       iframe {
         background: #fbfdfc; /* exa light background */
       }
       @media (prefers-color-scheme: dark) {
-        html,
-        body,
         iframe {
           background: #171918; /* exa dark background */
         }
       }
       /* #endregion */
 
-      /* #region fullscreen example (specific for fullscreen mode) */
+      /* #region floating wallet frame */
       body {
-        position: fixed; /* lock page in place; no page scroll */
-        overflow: hidden; /* hide any overflow behind the app */
-        inset: 0; /* anchor to viewport edges */
+        margin: 0; /* remove default browser margins that cause tiny scrollbars */
+        min-height: 100dvh; /* allow normal page flow and scrolling */
       }
       iframe {
-        position: fixed; /* pin to viewport */
-        inset: 0; /* fill viewport */
-        width: 100vw; /* full visual width */
-        height: 100dvh; /* dynamic height; handles mobile URL bar */
-        max-width: 100vw; /* avoid accidental horizontal scroll */
-        max-height: 100dvh; /* avoid accidental vertical scroll */
+        position: fixed; /* float over page */
+        right: max(16px, env(safe-area-inset-right)); /* anchor bottom-right */
+        bottom: max(16px, env(safe-area-inset-bottom));
+        width: 380px; /* wallet-like size */
+        height: 700px;
+        max-width: calc(100vw - 32px);
+        max-height: calc(100dvh - 32px);
+        border-radius: 8px; /* subtle rounding */
+        overflow: hidden; /* clip to rounded corners */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); /* elevate above page */
+        outline: 1px solid rgba(0, 0, 0, 0.08); /* subtle border in light mode */
+        z-index: 1000; /* ensure it stays on top */
+      }
+      @media (prefers-color-scheme: dark) {
+        iframe {
+          outline-color: rgba(255, 255, 255, 0.08); /* subtle border in dark mode */
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
       }
       /* #endregion */
     </style>
