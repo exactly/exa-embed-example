@@ -1,24 +1,9 @@
-import { createConfig, SequenceConnect, useOpenConnectModal } from "@0xsequence/connect";
-import { allNetworks, ChainId } from "@0xsequence/network";
+import { SequenceConnect, useOpenConnectModal } from "@0xsequence/connect";
 import { getAccount, getChainId, signMessage, switchChain } from "@wagmi/core";
 import { useLayoutEffect, useRef } from "react";
 
 import hostExaApp from "./hostExaApp"; // host SDK: expose APIs to the iframe
-
-const { connectConfig, wagmiConfig } = createConfig("waas", {
-  appName: "Exa App Embed Example",
-  defaultChainId: ChainId.OPTIMISM,
-  embeddedWalletTitle: "Exa App Owner Wallet",
-  waasConfigKey: "eyJwcm9qZWN0SWQiOjQzOTc0LCJycGNTZXJ2ZXIiOiJodHRwczovL3dhYXMuc2VxdWVuY2UuYXBwIn0=",
-  googleClientId: "27593622387-9dnoiu04rvha804eeucloh6hkaqjk6hh.apps.googleusercontent.com", // cspell:ignore 9dnoiu04rvha804eeucloh6hkaqjk6hh.apps.googleusercontent.com
-  projectAccessKey: "AQAAAAAAAKvGuTfXGGCZM2jb2kG_7W3qVGk", // cspell:ignore AQAAAAAAAKvGuTfXGGCZM2jb2kG_7W3qVGk
-  enableConfirmationModal: true,
-  hideConnectedWallets: true,
-  hideExternalConnectOptions: true,
-  chainIds: Object.values(allNetworks)
-    .filter(({ type, deprecated }) => type === "mainnet" && !deprecated)
-    .map(({ chainId }) => chainId),
-});
+import { connectConfig, wagmiConfig } from "./sequence";
 
 function App() {
   const { setOpenConnectModal } = useOpenConnectModal();
