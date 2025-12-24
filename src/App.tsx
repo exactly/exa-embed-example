@@ -2,9 +2,9 @@ import { sendTransactions, SequenceConnect, useOpenConnectModal } from "@0xseque
 import { SequenceIndexer } from "@0xsequence/indexer";
 import { getAccount, getChainId, getPublicClient, getWalletClient, signMessage, switchChain } from "@wagmi/core";
 import { useLayoutEffect, useRef } from "react";
-import { hexToBigInt } from "viem";
 import { useAccount, useDisconnect } from "wagmi";
 
+import { ChainId, networks } from "@0xsequence/network";
 import hostExaApp from "./hostExaApp"; // host SDK: expose APIs to the iframe
 import { connectConfig, wagmiConfig } from "./sequence";
 
@@ -46,24 +46,29 @@ function App() {
             const { address, chainId, connector } = getAccount(wagmiConfig);
             if (!address || !chainId || !connector) throw new Error("not connected");
             if (params[0].from && params[0].from !== address) throw new Error("bad account");
-            sendTransactions({
-              chainId,
-              connector,
-              senderAddress: address,
-              publicClient: getPublicClient(wagmiConfig)!,
-              walletClient: await getWalletClient(wagmiConfig)!,
-              indexerClient: new SequenceIndexer("https://indexer.sequence.app", connectConfig.projectAccessKey),
-              transactions: (
-                params[0].calls as { to: `0x${string}`; data?: `0x${string}`; value?: `0x${string}` }[]
-              ).map(({ to, data, value }) => ({ to, data, value: value && hexToBigInt(value) })),
-            })
-              .then((result) => {
-                console.log("sendTransactions result", result);
-              })
-              .catch((error) => {
-                console.error("sendTransactions error", error);
-              });
-            return { id: params[0].id };
+            if (params[0].chainId && Number(params[0].chainId) !== chainId) throw new Error("bad chain id");
+            return {
+              id: params[0].id,
+              result: await Promise.all(
+                (
+                  await sendTransactions({
+                    chainId,
+                    connector,
+                    senderAddress: address,
+                    publicClient: getPublicClient(wagmiConfig)!,
+                    walletClient: await getWalletClient(wagmiConfig)!,
+                    indexerClient: new SequenceIndexer(
+                      `https://${networks[chainId as ChainId]!.name}-indexer.sequence.app`,
+                      connectConfig.projectAccessKey,
+                    ),
+                    transactions: (
+                      params[0].calls as { to: `0x${string}`; data?: `0x${string}`; value?: `0x${string}` }[]
+                    ).map(({ to, data, value }) => ({ to, data, value: value && BigInt(value) })),
+                    waitConfirmationForLastTransaction: false,
+                  })
+                ).map((send) => send()),
+              ),
+            };
           }
           default:
             throw new Error(`${method} not supported`);
@@ -79,7 +84,9 @@ function App() {
       <iframe
         ref={exaApp}
         title="Exa App"
-        src="http://localhost:8081"
+        src="https://web.exactly.app"
+        // src="http://localhost:8081" // local development
+        // src="https://sandbox.exactly.app" // sandbox environment
         allow="clipboard-read; clipboard-write; camera" // address UX: copy/paste addresses; scan address QR codes
         loading="eager" // load immediately; primary content
         className={isConnected ? undefined : "closed"}
