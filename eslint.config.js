@@ -27,6 +27,7 @@ export default defineConfig({
     "@eslint-react/dom/no-missing-iframe-sandbox": "off",
     "@typescript-eslint/no-deprecated": "warn",
     "unicorn/filename-case": "off",
+    "unicorn/no-await-expression-member": "off",
     "unicorn/no-null": "off",
     "unicorn/prefer-global-this": "off",
     "unicorn/prevent-abbreviations": ["error", { allowList: { params: true } }],

@@ -1,8 +1,19 @@
-import { SequenceConnect, useOpenConnectModal } from "@0xsequence/connect";
-import { getAccount, getChainId, signMessage, switchChain } from "@wagmi/core";
+import { sendTransactions, SequenceConnect, useOpenConnectModal } from "@0xsequence/connect";
+import { SequenceIndexer } from "@0xsequence/indexer";
+import {
+  getAccount,
+  getCallsStatus,
+  getChainId,
+  getPublicClient,
+  getWalletClient,
+  signMessage,
+  switchChain,
+} from "@wagmi/core";
 import { useLayoutEffect, useRef } from "react";
+import { concat, numberToHex } from "viem";
 import { useAccount, useDisconnect } from "wagmi";
 
+import { ChainId, networks } from "@0xsequence/network";
 import hostExaApp from "./hostExaApp"; // host SDK: expose APIs to the iframe
 import { connectConfig, wagmiConfig } from "./sequence";
 
@@ -38,6 +49,36 @@ function App() {
             if (!Array.isArray(params) || params.length !== 2) throw new Error("bad params");
             if (params[1] !== getAccount(wagmiConfig).address) throw new Error("bad account");
             return signMessage(wagmiConfig, { message: { raw: params[0] } });
+          case "wallet_sendCalls": {
+            if (!Array.isArray(params) || params.length !== 1) throw new Error("bad params");
+            const { address, chainId, connector } = getAccount(wagmiConfig);
+            if (!address || !chainId || !connector) throw new Error("not connected");
+            if (params[0].from && params[0].from !== address) throw new Error("bad account");
+            if (params[0].chainId && Number(params[0].chainId) !== chainId) throw new Error("bad chain id");
+            const hashes = await Promise.all(
+              (
+                await sendTransactions({
+                  chainId,
+                  connector,
+                  senderAddress: address,
+                  publicClient: getPublicClient(wagmiConfig)!,
+                  walletClient: await getWalletClient(wagmiConfig)!,
+                  indexerClient: new SequenceIndexer(
+                    `https://${networks[chainId as ChainId]!.name}-indexer.sequence.app`,
+                    connectConfig.projectAccessKey,
+                  ),
+                  transactions: (
+                    params[0].calls as { to: `0x${string}`; data?: `0x${string}`; value?: `0x${string}` }[]
+                  ).map(({ to, data, value }) => ({ to, data, value: value && BigInt(value) })),
+                  waitConfirmationForLastTransaction: false,
+                })
+              ).map((send) => send() as Promise<`0x${string}`>),
+            );
+            return { id: concat([...hashes, numberToHex(chainId, { size: 32 }), TX_MAGIC_ID]) };
+          }
+          case "wallet_getCallsStatus":
+            if (!Array.isArray(params) || params.length !== 1 || typeof params[0] !== "string") throw new Error("bad");
+            return getCallsStatus(wagmiConfig, { id: params[0] });
           default:
             throw new Error(`${method} not supported`);
         }
@@ -75,3 +116,5 @@ export default function Layout() {
     </SequenceConnect>
   );
 }
+
+const TX_MAGIC_ID = "0x5792579257925792579257925792579257925792579257925792579257925792" as const;
