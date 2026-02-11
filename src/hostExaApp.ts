@@ -28,56 +28,29 @@ export default function hostExaApp({
   /** Optional. Should open external URLs; defaults to safe window.open. */
   openUrl?: (url: string) => void;
   /** Optional. Called when Exa signals readiness (hide splash, etc.). */
-  ready?: () => void;
+  ready?: (exa: ExaHost) => void;
 }) {
   return exposeToIframe({
     iframe,
     miniAppOrigin: new URL(iframe.src).origin,
-    sdk: {
-      context: { client: { clientFid, platformType, appUrl, added: false }, user: { fid: 0 } },
-      getChains: async () => [`eip155:${chainId}`],
-      getCapabilities: async () => ["actions.openUrl", "actions.ready"],
-      ethProviderRequestV2: async ({ id, method, params }) => ({
-        jsonrpc: "2.0",
-        id,
-        result: await request(method, params),
-      }),
-      openUrl,
-      ready,
-
-      // #region currently unused by exa app
-      close: () => {},
-      setPrimaryButton: () => {},
-      addMiniApp: async () => ({}),
-      viewCast: async () => {},
-      viewProfile: async () => {},
-      composeCast: async () => undefined as never,
-      viewToken: async () => {},
-      sendToken: async () => ({ success: false, reason: "send_failed" }),
-      swapToken: async () => ({ success: false, reason: "swap_failed" }),
-      openMiniApp: async () => {},
-      signIn: async () => {
-        throw new Error("unimplemented");
-      },
-      updateBackState: async () => {},
-      impactOccurred: async () => {},
-      notificationOccurred: async () => {},
-      selectionChanged: async () => {},
-      // #endregion
-
-      // #region unnecessary
-      eip6963RequestProvider: () => {}, // handled by miniapp-sdk's ethereum provider
-      requestCameraAndMicrophoneAccess: async () => {}, // handled by web api `navigator.mediaDevices.getUserMedia()`
-      addFrame: () => {
-        throw new Error("deprecated");
-      },
-      ethProviderRequest: () => {
-        throw new Error("deprecated");
-      },
-      signManifest: () => {
-        throw new Error("unsupported");
-      },
-      // #endregion
-    } as MiniAppHost,
+    sdk: new Proxy(
+      {
+        context: { client: { clientFid, platformType, appUrl, added: false }, user: { fid: 0 } },
+        getChains: async () => [`eip155:${chainId}`],
+        getCapabilities: async () => ["actions.openUrl", "actions.ready"],
+        ethProviderRequestV2: async ({ id, method, params }: { id: number; method: string; params?: unknown }) => ({
+          jsonrpc: "2.0",
+          id,
+          result: await request(method, params),
+        }),
+        openUrl,
+        ready: (exa?: ExaHost) => {
+          if (exa) ready(exa);
+        },
+      } as unknown as MiniAppHost,
+      { get: (target, property, receiver) => Reflect.get(target, property, receiver) ?? (() => {}) },
+    ),
   });
 }
+
+export type ExaHost = { getAddress: () => Promise<string | null>; hasCard: () => Promise<boolean> };

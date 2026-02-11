@@ -1,5 +1,6 @@
 import { sendTransactions, SequenceConnect, useOpenConnectModal } from "@0xsequence/connect";
 import { SequenceIndexer } from "@0xsequence/indexer";
+import { ChainId, networks } from "@0xsequence/network";
 import {
   getAccount,
   getCallsStatus,
@@ -9,12 +10,12 @@ import {
   signMessage,
   switchChain,
 } from "@wagmi/core";
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { concat, numberToHex } from "viem";
 import { useAccount, useDisconnect } from "wagmi";
 
-import { ChainId, networks } from "@0xsequence/network";
-import hostExaApp from "./hostExaApp"; // host SDK: expose APIs to the iframe
+import type { ExaHost } from "./hostExaApp";
+import hostExaApp from "./hostExaApp";
 import { connectConfig, wagmiConfig } from "./sequence";
 
 function App() {
@@ -22,6 +23,9 @@ function App() {
   const { setOpenConnectModal } = useOpenConnectModal();
   const { isConnected, isConnecting } = useAccount();
   const exaApp = useRef<HTMLIFrameElement>(null); // hold iframe element reference
+  const [address, setAddress] = useState<string | null>(null);
+  const [hasCard, setHasCard] = useState(false);
+  const [exa, setExa] = useState<ExaHost | null>(null);
 
   useLayoutEffect(() => {
     const iframe = exaApp.current;
@@ -83,6 +87,13 @@ function App() {
             throw new Error(`${method} not supported`);
         }
       },
+      ready(exa: ExaHost) {
+        setExa(() => exa);
+        exa
+          .getAddress()
+          .then(setAddress)
+          .catch(() => setAddress(null));
+      },
     });
 
     return () => host.cleanup(); // teardown host SDK on unmount
@@ -98,13 +109,52 @@ function App() {
         loading="eager" // load immediately; primary content
         className={isConnected ? undefined : "closed"}
       />
-      <button
-        type="button"
-        disabled={isConnecting}
-        onClick={() => (isConnected ? disconnect() : setOpenConnectModal(true))}
-      >
-        {isConnected ? "Sign Out" : "Sign In"}
-      </button>
+      <main>
+        <h1>exa app embed example</h1>
+        <p>
+          Embed the Exa Account in your app, provide a crypto-backed credit card to your users. Free, permissionless,
+          and effortless to integrate.
+        </p>
+        <header>
+          <code>{address ?? "not connected"}</code>
+          <output data-active={hasCard || undefined}>{hasCard ? "card active" : "no card"}</output>
+        </header>
+        <nav>
+          <button
+            type="button"
+            disabled={isConnecting}
+            onClick={() => (isConnected ? disconnect() : setOpenConnectModal(true))}
+          >
+            {isConnected ? "Sign Out" : "Sign In"}
+          </button>
+          <button
+            type="button"
+            disabled={!exa}
+            onClick={() => {
+              if (!exa) return;
+              exa
+                .getAddress()
+                .then(setAddress)
+                .catch(() => setAddress(null));
+            }}
+          >
+            Refresh Address
+          </button>
+          <button
+            type="button"
+            disabled={!exa}
+            onClick={() => {
+              if (!exa) return;
+              exa
+                .hasCard()
+                .then(setHasCard)
+                .catch(() => setHasCard(false));
+            }}
+          >
+            Refresh Card
+          </button>
+        </nav>
+      </main>
     </>
   );
 }
