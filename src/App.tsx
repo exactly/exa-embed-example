@@ -93,6 +93,10 @@ function App() {
           .getAddress()
           .then(setAddress)
           .catch(() => setAddress(null));
+        exa
+          .hasCard()
+          .then(setHasCard)
+          .catch(() => setHasCard(false));
       },
     });
 
